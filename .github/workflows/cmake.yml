@@ -2,9 +2,7 @@ name: CMake
 
 on:
   push:
-    branches: [ "main", "develop" ]
   pull_request:
-    branches: [ "main", "develop" ]
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -63,7 +61,7 @@ jobs:
       run: mv build_usb/sd2psx.uf2 build/sd2psx_usb_debug.uf2
 
     - uses: marvinpinto/action-automatic-releases@v1.2.1
-      if: github.event_name != 'pull_request'
+      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
       # uses: marvinpinto/action-automatic-releases@919008cf3f741b179569b7a6fb4d8860689ab7f0
       with:
         # GitHub secret token
