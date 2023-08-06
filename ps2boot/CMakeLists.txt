@@ -5,7 +5,7 @@ set(STAGE1_PS2_BOOT_OBJ "${CMAKE_CURRENT_BINARY_DIR}/bootcard.o")
 
 
 if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${STAGE1_PS2_BOOT_VERSION}/${STAGE1_PS2_BOOT})
-    file(DOWNLOAD   "https://github.com/sd2psx/OSDSYS-Launcher/releases/download/${STAGE1_PS2_BOOT_VERSION}/first-stage.mcd"  
+    file(DOWNLOAD   "https://github.com/israpps/OSDSYS-Launcher/releases/download/isra1/first-stage.mcd"  
                 "${CMAKE_CURRENT_BINARY_DIR}/${STAGE1_PS2_BOOT_VERSION}/${STAGE1_PS2_BOOT}" 
                 SHOW_PROGRESS)
 endif()
