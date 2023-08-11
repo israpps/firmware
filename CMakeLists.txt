@@ -141,5 +141,6 @@ set(DEBUG_USB_UART OFF CACHE BOOL "Activate UART over USB for debugging")
 
 if(DEBUG_USB_UART)
     add_definitions(-DDEBUG_USB_UART)
+    add_definitions(-DDEBUG_MC_PROTOCOL)
     pico_enable_stdio_usb(sd2psx ENABLED)
 endif()
