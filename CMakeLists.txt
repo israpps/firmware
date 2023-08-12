@@ -143,3 +143,9 @@ if(DEBUG_USB_UART)
     add_definitions(-DDEBUG_USB_UART)
     pico_enable_stdio_usb(sd2psx ENABLED)
 endif()
+
+set(DEBUG_MC_PROTOCOL OFF CACHE BOOL "Aditional debug messages on MC command reception and response")
+
+if(DEBUG_MC_PROTOCOL)
+    add_definitions(-DDEBUG_MC_PROTOCOL)
+endif()

@@ -517,6 +517,74 @@ if (ch == 0x11) {
     } else {
         debug_printf("!! unknown subcmd %02X -> %02X\n", 0xF2, subcmd);
     }
+} else if (ch == 0xA0) {
+    /*SD2PSXMAN comunnication protocol begins*/
+    send(0xFF);
+    recv();
+    int subcmd = cmd;
+    if (subcmd == 0x20) { // Ping Command
+        send(0x0);
+        send(SD2PSXMAN_PROTOCOL_VER); recv();
+        send(SD2PSXMAN_PRODUCTS_VER); recv();
+        send(0x27); recv();// tell SD2PSXMAN we are an SD2PSX
+        send(term);
+    } else if (subcmd == 0x21) { // set GameID
+        send(0x0);
+        recv(); send(0x0); //this was padding
+        recv(); send(0x0); // we were sent the size of the rest of the buffer
+        int IDLEN = ch;
+        for (int i = 0; i < IDLEN; ++i) {
+            recv();
+            // do something here
+        }
+    } else if (subcmd == 0x22) { // set channel
+        send(0x0);
+        recv(); send(0x0);
+        recv();
+        subcmd = ch; send(0x0);
+        if (ch == 0x00) { //0: fixed value, 1: channel++, 2: channel--
+            ps2_cardman_set_channel(subcmd);
+            send(0x20);
+        }
+        else if (ch == 0x1) {
+            ps2_cardman_next_channel();
+            send(0x20);
+        }
+        else if (ch == 0x2) {
+            ps2_cardman_prev_channel();
+            send(0x20);
+        }
+        else {
+            debug_printf("!! at SD2PSXMAN::set_chan() invalid operation ID %d\n", subcmd);
+            send(0x0);
+        }
+        send(term);
+    } else if (subcmd == 0x23) { // set card
+        send(0x0);
+        recv(); send(0x0);
+        recv();
+        subcmd = ch; send(0x0);
+        if (ch == 0x00) { //0: fixed value, 1: card++, 2: card--
+            ps2_cardman_set_idx(subcmd);
+            send(0x20);
+        }
+        else if (ch == 0x1) {
+            ps2_cardman_next_idx();
+            send(0x20);
+        }
+        else if (ch == 0x2) {
+            ps2_cardman_prev_idx();
+            send(0x20);
+        }
+        else {
+            debug_printf("!! at SD2PSXMAN::set_idx() invalid operation ID %d\n", subcmd);
+            send(0x0);
+        }
+        send(term);
+    } else if (subcmd == 0x20) { // Ping Command
+    } else {
+        send(0xFF); // unknown command, send 0xff, 0x00 on correct command
+    }
 } else {
     debug_printf("!! unknown %02X\n", ch);
 }

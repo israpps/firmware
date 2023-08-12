@@ -348,6 +348,14 @@ int ps2_cardman_get_channel(void) {
     return card_chan;
 }
 
+void ps2_cardman_set_idx(int T) {
+    card_idx = T;
+}
+
+void ps2_cardman_set_channel(int T) {
+    card_chan = T;
+}
+
 void ps2_cardman_set_progress_cb(cardman_cb_t func) {
     cardman_cb = func;
 }
