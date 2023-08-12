@@ -56,5 +56,13 @@ packet offset | sent byte | response byte | explanation |
 `0x06` |`0x00`| `0xFF` | Termination Signal |
 
 
+## `0x24` - Unmount Bootcard
+packet offset | sent byte | response byte | explanation |
+:-----------: | :-------: | :-----------: | :---------: |
+ `0x02` |`0x24`| `0x00` | Switch to Stage 2 Boot |
+ `0x03` |`0x00`| `0x00` | padding |
+ `0x04` |`0x00`| `0x00` | padding |
+ `0x05` |`0x00`| `0x20` | Success (`0x00` if bootcard is not mounted) |
+ `0x06` |`0x00`| `0xFF` | Termination Signal |
 
 `` | `` | `` | 

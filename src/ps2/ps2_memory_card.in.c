@@ -538,19 +538,25 @@ if (ch == 0x11) {
             // do something here
         }
     } else if (subcmd == 0x22) { // set channel
+    debug_printf("set channel CMD detected")
         send(0x0);
-        recv(); send(0x0);
-        recv();
-        subcmd = ch; send(0x0);
-        if (ch == 0x00) { //0: fixed value, 1: channel++, 2: channel--
-            ps2_cardman_set_channel(subcmd);
+        recv(); send(0x0); //get operation ID
+        subcmd = ch; 
+        recv(); // get new value if operation ID is 0
+        send(0x0);
+        if (subcmd == 0x00) { //0: fixed value, 1: channel++, 2: channel--
+            if (ch != ps2_cardman_get_channel())
+            {
+                ps2_cardman_set_channel(ch);
+                subcmd = 0x01; //change subcmd for simplicity when checking if card has to be changed
+            }
             send(0x20);
         }
-        else if (ch == 0x1) {
+        else if (subcmd == 0x1) {
             ps2_cardman_next_channel();
             send(0x20);
         }
-        else if (ch == 0x2) {
+        else if (subcmd == 0x2) {
             ps2_cardman_prev_channel();
             send(0x20);
         }
@@ -558,21 +564,30 @@ if (ch == 0x11) {
             debug_printf("!! at SD2PSXMAN::set_chan() invalid operation ID %d\n", subcmd);
             send(0x0);
         }
+        if (subcmd > 0) { //a card change happened
+            ps2_memory_card_exit();
+            ps2_cardman_close();
+            gui_do_ps2_card_switch();
+        }
         send(term);
     } else if (subcmd == 0x23) { // set card
         send(0x0);
-        recv(); send(0x0);
-        recv();
-        subcmd = ch; send(0x0);
-        if (ch == 0x00) { //0: fixed value, 1: card++, 2: card--
-            ps2_cardman_set_idx(subcmd);
-            send(0x20);
+        recv(); send(0x0); //get operation ID
+        subcmd = ch; 
+        recv(); // get new value if operation ID is 0
+        send(0x0);
+        if (subcmd == 0x00) { //0: fixed value, 1: card++, 2: card--
+            if (ch != ps2_cardman_get_idx())
+            {
+                ps2_cardman_set_idx(ch);
+                subcmd = 0x01; //change subcmd for simplicity when checking if card has to be changed
+            }
         }
-        else if (ch == 0x1) {
+        else if (subcmd == 0x1) {
             ps2_cardman_next_idx();
             send(0x20);
         }
-        else if (ch == 0x2) {
+        else if (subcmd == 0x2) {
             ps2_cardman_prev_idx();
             send(0x20);
         }
@@ -580,9 +595,27 @@ if (ch == 0x11) {
             debug_printf("!! at SD2PSXMAN::set_idx() invalid operation ID %d\n", subcmd);
             send(0x0);
         }
+        if (subcmd > 0) { //a card change happened
+            ps2_memory_card_exit();
+            ps2_cardman_close();
+            gui_do_ps2_card_switch();
+        }
         send(term);
-    } else if (subcmd == 0x20) { // Ping Command
+    } else if (subcmd == 0x24) { // Umount bootcard
+        send(0x0);
+        send(0x0);  recv();
+        send(0x0);  recv();
+        if (ps2_cardman_get_idx() == IDX_BOOT)
+        {
+            send(0x20); //sucess?
+            ps2_cardman_next_idx();
+            ps2_memory_card_exit();
+            ps2_cardman_close();
+            gui_do_ps2_card_switch();
+        } else {send(0x0);} //bootcard is not mounted
+        send(0xFF);
     } else {
+        debug_printf("!! unknown subcmd 0xA0 -> %02X\n", subcmd);
         send(0xFF); // unknown command, send 0xff, 0x00 on correct command
     }
 } else {
