@@ -8,7 +8,7 @@ send(0xFF);
 
 /* sub cmd */
 recv();
-ch = ch;
+ch = cmd;
 #ifdef DEBUG_MC_PROTOCOL
 if (ch != 0x42 && ch != 0x43)
     debug_printf("> %02X\n", ch);
