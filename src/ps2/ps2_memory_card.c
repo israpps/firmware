@@ -21,6 +21,9 @@
 #include <stdbool.h>
 #include <string.h>
 
+#define SD2PSXMAN_PROTOCOL_VER 0x001 /// TODO: Discuss if this will be an arbitrary number. or if we should use the SD2PSXMAN IRX Version number as protocol Version too
+#define SD2PSXMAN_PRODUCTS_VER 0x001
+#define IRX_VER(major, minor)	((((major) & 0xff) << 8) + ((minor) & 0xff))
 
 // #define DEBUG_MC_PROTOCOL
 
