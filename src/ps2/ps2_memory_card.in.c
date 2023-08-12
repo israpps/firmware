@@ -521,7 +521,7 @@ if (ch == 0x11) {
     /*SD2PSXMAN comunnication protocol begins*/
     send(0xFF);
     recv();
-    debug_printf("SD2PSXMAN: CMD %02X\n", ch);
+    debug_printf("SD2PSXMAN: CMD %02X\n", cmd);
     int subcmd = cmd;
     if (subcmd == 0x20) { // Ping Command
         send(0x0);
@@ -546,9 +546,9 @@ if (ch == 0x11) {
         recv(); // get new value if operation ID is 0
         send(0x0);
         if (subcmd == 0x00) { //0: fixed value, 1: channel++, 2: channel--
-            if (ch != ps2_cardman_get_channel())
+            if (cmd != ps2_cardman_get_channel())
             {
-                ps2_cardman_set_channel(ch);
+                ps2_cardman_set_channel(cmd);
                 subcmd = 0x01; //change subcmd for simplicity when checking if card has to be changed
             }
             send(0x20);
@@ -580,7 +580,7 @@ if (ch == 0x11) {
         if (subcmd == 0x00) { //0: fixed value, 1: card++, 2: card--
             if (cmd != ps2_cardman_get_idx())
             {
-                ps2_cardman_set_idx(ch);
+                ps2_cardman_set_idx(cmd);
                 subcmd = 0x01; //change subcmd for simplicity when checking if card has to be changed
             }
         }
