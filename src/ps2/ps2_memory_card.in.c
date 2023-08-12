@@ -538,7 +538,7 @@ if (ch == 0x11) {
             // do something here
         }
     } else if (subcmd == 0x22) { // set channel
-    debug_printf("set channel CMD detected")
+    debug_printf("set channel CMD detected");
         send(0x0);
         recv(); send(0x0); //get operation ID
         subcmd = ch; 
@@ -605,7 +605,7 @@ if (ch == 0x11) {
         send(0x0);
         send(0x0);  recv();
         send(0x0);  recv();
-        if (ps2_cardman_get_idx() == IDX_BOOT)
+        if (ps2_cardman_get_idx() == 0) //IDX_BOOT
         {
             send(0x20); //sucess?
             ps2_cardman_next_idx();
