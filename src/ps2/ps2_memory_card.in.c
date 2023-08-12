@@ -8,7 +8,7 @@ send(0xFF);
 
 /* sub cmd */
 recv();
-ch = cmd;
+ch = ch;
 #ifdef DEBUG_MC_PROTOCOL
 if (ch != 0x42 && ch != 0x43)
     debug_printf("> %02X\n", ch);
@@ -521,6 +521,7 @@ if (ch == 0x11) {
     /*SD2PSXMAN comunnication protocol begins*/
     send(0xFF);
     recv();
+    debug_printf("SD2PSXMAN: CMD %02X\n", ch);
     int subcmd = cmd;
     if (subcmd == 0x20) { // Ping Command
         send(0x0);
@@ -532,7 +533,7 @@ if (ch == 0x11) {
         send(0x0);
         recv(); send(0x0); //this was padding
         recv(); send(0x0); // we were sent the size of the rest of the buffer
-        int IDLEN = ch;
+        int IDLEN = cmd;
         for (int i = 0; i < IDLEN; ++i) {
             recv();
             // do something here
@@ -541,7 +542,7 @@ if (ch == 0x11) {
     debug_printf("set channel CMD detected");
         send(0x0);
         recv(); send(0x0); //get operation ID
-        subcmd = ch; 
+        subcmd = cmd; 
         recv(); // get new value if operation ID is 0
         send(0x0);
         if (subcmd == 0x00) { //0: fixed value, 1: channel++, 2: channel--
@@ -573,11 +574,11 @@ if (ch == 0x11) {
     } else if (subcmd == 0x23) { // set card
         send(0x0);
         recv(); send(0x0); //get operation ID
-        subcmd = ch; 
+        subcmd = cmd; 
         recv(); // get new value if operation ID is 0
         send(0x0);
         if (subcmd == 0x00) { //0: fixed value, 1: card++, 2: card--
-            if (ch != ps2_cardman_get_idx())
+            if (cmd != ps2_cardman_get_idx())
             {
                 ps2_cardman_set_idx(ch);
                 subcmd = 0x01; //change subcmd for simplicity when checking if card has to be changed
