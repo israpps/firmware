@@ -188,16 +188,33 @@ void ps2_mmceman_fs_run(void)
         break;
 
         case MMCEMAN_FS_WRITE:
-            write_size = op_data.bytes_transferred % 4096;
-            if (write_size == 0)
-                write_size = 4096;
+            if (op_data.fd != 0x8B) {
+                write_size = op_data.bytes_transferred % 4096;
+                if (write_size == 0)
+                    write_size = 4096;
 
-            log(LOG_INFO, "Writing: %u to sd\n", write_size);
-            op_data.rv = sd_write(op_data.fd, (void*)op_data.buffer[0], write_size);
-            sd_flush(op_data.fd); //flush data
+                log(LOG_INFO, "Writing: %u to sd\n", write_size);
+                op_data.rv = sd_write(op_data.fd, (void*)op_data.buffer[0], write_size);
+                sd_flush(op_data.fd); //flush data
 
-            op_data.bytes_written += op_data.rv;
-            log(LOG_INFO, "Wrote: %i, progress: %u of %u\n", op_data.rv, op_data.bytes_written, op_data.length);
+                op_data.bytes_written += op_data.rv;
+                log(LOG_INFO, "Wrote: %i, progress: %u of %u\n", op_data.rv, op_data.bytes_written, op_data.length);
+            } else {
+                write_size = op_data.bytes_transferred % 4096;
+                if (write_size == 0)
+                    write_size = 4096;
+                op_data.bytes_written += write_size;
+
+                char *cptr = &op_data.buffer[0];
+
+                for (int i = 0; i < write_size; i++) {
+                    printf("%c", *cptr);
+                    cptr++;
+                }
+
+                //clear buffer
+                memset(&op_data.buffer[0], 0, write_size);
+            }
 
             mmceman_fs_operation = MMCEMAN_FS_NONE;
         break;
