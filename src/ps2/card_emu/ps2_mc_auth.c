@@ -484,6 +484,7 @@ inline __attribute__((always_inline)) void __time_critical_func(ps2_mc_sessionKe
     /* session key encrypt */
     mc_respond(0xFF);
     receiveOrNextCmd(&subcmd);
+    DPRINTF("%s: subcmd:%02X\n", __func__, subcmd);
     if (subcmd == 0x50 || subcmd == 0x40) {
         mc_respond(0x2B);
         receiveOrNextCmd(&_);
