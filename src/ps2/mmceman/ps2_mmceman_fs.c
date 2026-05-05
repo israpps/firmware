@@ -203,7 +203,7 @@ void ps2_mmceman_fs_run(void)
                 write_size = op_data.bytes_transferred % 4096;
                 if (write_size == 0)
                     write_size = 4096;
-                printf("TTY Request z:%d\n", write_size);
+                
                 op_data.bytes_written += write_size;
 
                 char *cptr = &op_data.buffer[0];
