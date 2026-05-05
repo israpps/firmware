@@ -212,8 +212,6 @@ void ps2_mmceman_fs_run(void)
                     printf("%c", *cptr);
                     cptr++;
                 }
-                
-                printf("\n");
 
                 //clear buffer
                 memset(&op_data.buffer[0], 0, write_size);
